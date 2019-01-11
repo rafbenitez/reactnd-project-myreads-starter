@@ -5,9 +5,9 @@ import ListBook from './ListBook';
 
 class ListShelf extends Component {
   static propTypes = {
+    books: PropTypes.array.isRequired,
     shelf: PropTypes.object.isRequired,
     shelves: PropTypes.array.isRequired,
-    books: PropTypes.array.isRequired,
     onUpdateBook: PropTypes.func.isRequired
   }
 
@@ -28,8 +28,8 @@ class ListShelf extends Component {
             {listingBooks.map((book) => (
               <li key={book.id}>
                 <ListBook
-                  shelves={shelves}
                   book={book}
+                  shelves={shelves}
                   onUpdateBook={onUpdateBook}
                 />
               </li>

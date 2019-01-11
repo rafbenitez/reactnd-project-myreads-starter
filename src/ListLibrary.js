@@ -30,9 +30,9 @@ class ListLibrary extends Component {
             {listingShelves.map((shelf) => (
               <div key={shelf.id}>
                 <ListShelf
+                  books={books.filter((book) => book.shelf === shelf.id)}
                   shelf={shelf}
                   shelves={shelves}
-                  books={books.filter((book) => book.shelf === shelf.id)}
                   onUpdateBook={onUpdateBook}
                 />
               </div>

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types'
-import escapeRegExp from 'escape-string-regexp'
+// import escapeRegExp from 'escape-string-regexp'
 import sortBy from 'sort-by'
 
 class ListBook extends Component {
@@ -14,8 +14,15 @@ class ListBook extends Component {
     //
   }
 
+  handleChangeShelf = (event) => {
+    const { book, onUpdateBook } = this.props
+
+    onUpdateBook(book, event.target.value);
+
+  }
+
   render() {
-    const { book, shelves, onUpdateBook } = this.props
+    const { book, shelves } = this.props
 
     let shelfOptions = shelves.sort(sortBy('optionOrder'))
 
@@ -24,9 +31,17 @@ class ListBook extends Component {
         <div className="book-top">
           <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.smallThumbnail})` }}></div>
           <div className="book-shelf-changer">
-            <select onChange={onUpdateBook}>
+            <select
+              value={book.shelf}
+              onChange={this.handleChangeShelf}
+            >
               {shelfOptions.map((option) => (
-                <option key={option.id} value="{option.id}" disabled={!option.optionEnabled}>{option.title}</option>
+                <option
+                  key={option.id}
+                  value={option.id}
+                  disabled={!option.optionEnabled}
+                >{option.title}
+                </option>
               ))}
             </select>
           </div>

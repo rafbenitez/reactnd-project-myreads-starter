@@ -14,6 +14,7 @@ class BooksApp extends Component {
      * pages, as well as provide a good URL they can bookmark and share.
      */
     books: [],
+    searchResults: [],
     shelves: [
       {
         id: "move",
@@ -59,12 +60,24 @@ class BooksApp extends Component {
     })
   }
 
-  updateBook = (updatedBook) => {
-    this.setState((state) => ({
-      books: state.books.map((book) => {
-        return (book.id === updatedBook.id) ? updatedBook : book
+  searchBooks = (query) => {
+    // console.log(`:${query}:${typeof query}:`)
+    if (query.length > 0) {
+      BooksAPI.search(query).then((books) => {
+        // console.log(books);
+        (typeof books === 'object') ? this.setState({ searchResults: books }) : this.setState({ searchResults: [] })
       })
-    }))
+      }
+  }
+
+  updateBook = (updatedBook, newShelf) => {
+    BooksAPI.update(updatedBook, newShelf).then(() => {
+      this.setState((state) => ({
+        books: state.books.map((book) => {
+          return (book.id === updatedBook.id) ? { ...book, shelf: newShelf } : book
+        })
+      }))
+    })
   }
 
   render() {
@@ -73,19 +86,18 @@ class BooksApp extends Component {
       <div className="app">
         <Route exact path='/' render={() => (
           <ListLibrary
-            onUpdateBook={this.updateBook}
             books={this.state.books}
             shelves={this.state.shelves}
+            onUpdateBook={this.updateBook}
           />
         )}/>
         <Route path='/search' render={({ history }) => (
           <SearchBooks
-            onUpdateBook={this.updateBook}
+            books={this.state.books}
+            searchResults={ Array.isArray(this.state.searchResults) ? this.state.searchResults : [] }
             shelves={this.state.shelves}
-            // onCreateContact={(contact) => {
-            //   this.createContact(contact)
-            //   history.push('/')
-            // }}
+            onSearchBooks={this.searchBooks}
+            onUpdateBook={this.updateBook}
           />
         )}/>
       </div>
