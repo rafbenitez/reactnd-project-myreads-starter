@@ -1,7 +1,8 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import { Route } from 'react-router-dom'
 import ListLibrary from './ListLibrary'
 import SearchBooks from './SearchBooks'
+import sortBy from 'sort-by'
 import * as BooksAPI from './BooksAPI'
 import './App.css'
 
@@ -14,39 +15,40 @@ class BooksApp extends Component {
      * pages, as well as provide a good URL they can bookmark and share.
      */
     books: [],
+    query: '',
     searchResults: [],
     shelves: [
       {
-        id: "move",
-        title: "Move to...",
+        id: 'move',
+        title: 'Move to...',
         optionOrder: 1,
         optionEnabled: false,
         shelfOrder: -1
       },
       {
-        id: "currentlyReading",
-        title: "Currently Reading",
+        id: 'currentlyReading',
+        title: 'Currently Reading',
         optionOrder: 2,
         optionEnabled: true,
         shelfOrder: 1
       },
       {
-        id: "wantToRead",
-        title: "Want to Read",
+        id: 'wantToRead',
+        title: 'Want to Read',
         optionOrder: 3,
         optionEnabled: true,
         shelfOrder: 2
       },
       {
-        id: "read",
-        title: "Read",
+        id: 'read',
+        title: 'Read',
         optionOrder: 4,
         optionEnabled: true,
         shelfOrder: 3
       },
       {
-        id: "none",
-        title: "None",
+        id: 'none',
+        title: 'None',
         optionOrder: 5,
         optionEnabled: true,
         shelfOrder: -1
@@ -61,22 +63,41 @@ class BooksApp extends Component {
   }
 
   searchBooks = (query) => {
-    // console.log(`:${query}:${typeof query}:`)
+    this.setState({ query })
     if (query.length > 0) {
-      BooksAPI.search(query).then((books) => {
-        // console.log(books);
-        (typeof books === 'object') ? this.setState({ searchResults: books }) : this.setState({ searchResults: [] })
+      BooksAPI.search(query).then((results) => {
+        if (Array.isArray(results)) {
+          results = results.map((resultsBook) => {
+            let myBook = this.state.books.find((book) => {return book.id === resultsBook.id})
+            if (myBook) {
+              // console.log( { ...resultsBook, shelf: myBook.shelf} )
+              return { ...resultsBook, shelf: myBook.shelf }
+            } else {
+              return { ...resultsBook, shelf: 'none' }
+            }
+          })
+          this.setState({ searchResults: results.sort(sortBy('title')) })
+        } else {
+          this.setState({ searchResults: [] })
+        }
       })
-      }
+    } else {
+      this.setState({ searchResults: [] })
+    }
   }
 
   updateBook = (updatedBook, newShelf) => {
     BooksAPI.update(updatedBook, newShelf).then(() => {
-      this.setState((state) => ({
-        books: state.books.map((book) => {
-          return (book.id === updatedBook.id) ? { ...book, shelf: newShelf } : book
-        })
-      }))
+      this.setState((state) => {
+        let newBooks = state.books
+        if (newBooks.findIndex((e) => e.id === updatedBook.id) < 0 ) {
+          newBooks.push(updatedBook)
+        }
+        return {
+          books: newBooks.map((book) => {
+            return (book.id === updatedBook.id) ? { ...book, shelf: newShelf } : book
+          })
+      }})
     })
   }
 
@@ -84,26 +105,25 @@ class BooksApp extends Component {
 
     return (
       <div className="app">
-        <Route exact path='/' render={() => (
+        <Route exact path="/" render={() => (
           <ListLibrary
             books={this.state.books}
             shelves={this.state.shelves}
             onUpdateBook={this.updateBook}
           />
         )}/>
-        <Route path='/search' render={({ history }) => (
+        <Route path="/search" render={({ history }) => (
           <SearchBooks
             books={this.state.books}
+            query={this.state.query}
             searchResults={ Array.isArray(this.state.searchResults) ? this.state.searchResults : [] }
             shelves={this.state.shelves}
             onSearchBooks={this.searchBooks}
             onUpdateBook={this.updateBook}
           />
-        )}/>
+         )}/>
       </div>
     )
-
-
   }
 }
 

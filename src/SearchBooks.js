@@ -1,44 +1,24 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import ListBook from './ListBook';
+import ListBook from './ListBook'
 import PropTypes from 'prop-types'
-import escapeRegExp from 'escape-string-regexp'
-import sortBy from 'sort-by'
 
 class SearchBooks extends Component {
   static propTypes = {
     books: PropTypes.array.isRequired,
+    query: PropTypes.string.isRequired,
     searchResults: PropTypes.array.isRequired,
     shelves: PropTypes.array.isRequired,
     onSearchBooks: PropTypes.func.isRequired,
     onUpdateBook: PropTypes.func.isRequired
   }
 
-  state = {
-    query: ''
-  }
-
-  updateQuery = (query) => {
-    this.setState({ query: query.trim() })
-  }
-
-  clearQuery = () => {
-    this.setState({ query: '' })
+  componentDidMount() {
+    this.props.onSearchBooks('')
   }
 
   render() {
-    const { books, searchResults, shelves, onSearchBooks, onUpdateBook } = this.props
-    // const { query } = this.state
-
-    // let showingBooks
-    // if (query) {
-    //   const match = new RegExp(escapeRegExp(query), 'i')
-    //   showingBooks = books.filter((book) => match.test(book.name))
-    // } else {
-    //   showingBooks = books
-    // }
-
-    // showingBooks.sort(sortBy('name'))
+    const { query, searchResults, shelves, onSearchBooks, onUpdateBook } = this.props
 
     return (
       <div className="search-books">
@@ -57,13 +37,11 @@ class SearchBooks extends Component {
               you don't find a specific author or title. Every search is limited by search terms.
             */}
             <input
-              type='text'
-              placeholder='Search by title or author'
-              // value={query}
+              type="text"
+              placeholder="Search by title or author"
+              value={query}
               onChange={(event) => onSearchBooks(event.target.value)}
             />
-
-
           </div>
         </div>
         <div className="search-books-results">

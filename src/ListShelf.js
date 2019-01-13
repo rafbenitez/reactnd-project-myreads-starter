@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import sortBy from 'sort-by'
-import ListBook from './ListBook';
+import ListBook from './ListBook'
 
 class ListShelf extends Component {
   static propTypes = {
@@ -11,14 +11,10 @@ class ListShelf extends Component {
     onUpdateBook: PropTypes.func.isRequired
   }
 
-  state = {
-    //
-  }
-
   render() {
-    const { shelf, shelves, books, onUpdateBook } = this.props
+    const { books, shelf, shelves, onUpdateBook } = this.props
 
-    let listingBooks = books.sort(sortBy('name'))
+    let listingBooks = books.sort(sortBy('title'))
 
     return (
       <div className="bookshelf">

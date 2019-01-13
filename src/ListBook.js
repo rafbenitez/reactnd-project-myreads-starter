@@ -1,6 +1,5 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-// import escapeRegExp from 'escape-string-regexp'
 import sortBy from 'sort-by'
 
 class ListBook extends Component {
@@ -10,15 +9,10 @@ class ListBook extends Component {
     onUpdateBook: PropTypes.func.isRequired
   }
 
-  state = {
-    //
-  }
-
   handleChangeShelf = (event) => {
     const { book, onUpdateBook } = this.props
 
-    onUpdateBook(book, event.target.value);
-
+    onUpdateBook(book, event.target.value)
   }
 
   render() {
@@ -29,7 +23,10 @@ class ListBook extends Component {
     return (
       <div className="book">
         <div className="book-top">
-          <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.smallThumbnail})` }}></div>
+          <div
+            className="book-cover"
+            style={{ width: 128, height: 193, backgroundImage: `url(${ (book.imageLinks) ? book.imageLinks.smallThumbnail : '' })` }}>
+          </div>
           <div className="book-shelf-changer">
             <select
               value={book.shelf}

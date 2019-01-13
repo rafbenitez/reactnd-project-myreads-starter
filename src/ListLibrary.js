@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import ListShelf from './ListShelf'
 import PropTypes from 'prop-types'
@@ -9,10 +9,6 @@ class ListLibrary extends Component {
     books: PropTypes.array.isRequired,
     shelves: PropTypes.array.isRequired,
     onUpdateBook: PropTypes.func.isRequired
-  }
-
-  state = {
-    //
   }
 
   render() {
@@ -41,8 +37,8 @@ class ListLibrary extends Component {
         </div>
         <div className="open-search">
           <Link
-            to='/search'
-            className='open-search'
+            to="/search"
+            className="open-search"
           >Add a book</Link>
         </div>
       </div>
